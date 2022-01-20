@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="b55155cf-30a3-49e8-b648-6833743fac3b" >
+		<http:listener-connection host="localhost" port="8081" />
+	</http:listener-config>
+	<file:config name="File_Config" doc:name="File Config" doc:id="fa887ce4-4cec-43bc-95b6-f120a832e8b0" >
+	</file:config>
+	<file:config name="File_Config1" doc:name="File Config" doc:id="74f04c84-dadf-4f66-aed4-c3717ab63553" />
+	<file:config name="File_Config2" doc:name="File Config" doc:id="8b1f3536-a9f6-4a14-a87a-c176822cfe54" />
+	<flow name="for_eachFlow" doc:id="e8f21db9-07c9-4c36-8cf8-65713a0eb60d" >
+		<http:listener doc:name="Listener" doc:id="450db3c7-ea89-423c-8d01-a5701d250bf6" config-ref="HTTP_Listener_config" path="/for"/>
+		<file:read doc:name="Read" doc:id="4befcede-2c0f-4858-9e49-0b8c24f46e20" config-ref="File_Config2" path="C:\Users\HP\OneDrive\Desktop\my files\kishore json formet.json"/>
+		<logger level="INFO" doc:name="Logger" doc:id="2ab83fb1-0a7a-4f4c-8884-fc47b649fc6a" message="#[payload]"/>
+		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="3c7b6d8e-9c47-486c-9f7c-845b81982408" />
+		<foreach doc:name="For Each" doc:id="36770548-daa8-4252-af02-7d8089eb12f5" collection="#[payload]">
+			<logger level="INFO" doc:name="Logger" doc:id="b9ad753a-cbe7-4ba1-accf-a4fee9fdf66f" message="#[payload]"/>
+		</foreach>
+		<ee:transform doc:name="Transform Message" doc:id="9e410fc1-b6fa-426a-bb29-afef68adb61f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="6b18e670-fbc7-427d-b8a0-fbc2661c70f6" message="#[payload]"/>
+	</flow>
+</mule>
